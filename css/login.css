@@ -1,0 +1,262 @@
+/* ============================================================
+   LOGIN — CITE MADERA ERP
+   Conventions: BEM-light naming, CSS custom properties for
+   repeated values, mobile-first, reduced-motion safe.
+   ============================================================ */
+
+/* ── Design tokens ── */
+:root {
+  --brand: #A84117;
+  --brand-light: #fdf3ee;
+  --brand-shadow: rgba(168, 65, 23, .25);
+  --cream: #f7f3ef;
+  --ease-out-expo: cubic-bezier(.16, 1, .3, 1);
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+/* ── Reset (supplements Tailwind preflight) ── */
+body {
+  font-family: 'Sora', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -.01em;
+  background: #fff;
+  margin: 0;
+}
+h1, h2 { letter-spacing: -.03em }
+input:focus { outline: none }
+::-webkit-scrollbar { width: 4px }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 99px }
+
+/* ── Layout ── */
+.login-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #fff;
+}
+.login-showcase {
+  flex-shrink: 0;
+  width: 45%;
+  padding: 12px;
+}
+@media (min-width: 1024px) { .login-showcase { padding: 16px } }
+@media (max-width: 767px)  { .login-showcase { display: none } }
+
+.login-form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+@media (min-width: 640px) { .login-form-panel { padding: 0 32px } }
+@media (min-width: 768px) { .login-form-panel { padding: 0 40px } }
+@media (min-width: 1024px) { .login-form-panel { padding: 0 56px } }
+
+.login-form-inner {
+  width: 100%;
+  max-width: 380px;
+  padding: 32px 0;
+}
+
+/* ── Animations ── */
+@keyframes enter {
+  from { opacity: 0; transform: translateY(16px) }
+  to   { opacity: 1; transform: translateY(0) }
+}
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(30px) }
+  to   { opacity: 1; transform: translateX(0) }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-30px) }
+  to   { opacity: 1; transform: translateX(0) }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0) }
+  20%, 60% { transform: translateX(-6px) }
+  40%, 80% { transform: translateX(6px) }
+}
+@keyframes float {
+  0%, 100% { transform: var(--float-base, rotate(0deg)) translateY(0) }
+  50%      { transform: var(--float-base, rotate(0deg)) translateY(var(--float-y, -8px)) }
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(6px) }
+  to   { opacity: 1; transform: translateY(0) }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.anim-enter    { animation: enter .5s var(--ease-out-expo) forwards }
+.anim-enter-d1 { animation: enter .5s .1s var(--ease-out-expo) both }
+.anim-enter-d2 { animation: enter .5s .2s var(--ease-out-expo) both }
+.anim-slide-left  { animation: slideLeft .4s var(--ease-out-expo) forwards }
+.anim-slide-right { animation: slideRight .4s var(--ease-out-expo) forwards }
+.shake { animation: shake .4s ease-in-out }
+
+/* Slide crossfade */
+.slide-fade     { transition: opacity .3s ease, transform .3s ease }
+.slide-fade-out { opacity: 0; transform: translateY(4px) }
+.slide-fade-in  { animation: fadeSlide .4s var(--ease-out-expo) forwards }
+
+/* ── Doodle background ── */
+.doodle-bg {
+  background-color: var(--cream);
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  height: 100%;
+}
+.doodle-pattern {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url('../img/fondo-doodle.png');
+  background-size: 520px;
+  background-repeat: repeat;
+  transform: rotate(-30deg);
+  filter: invert(1) sepia(.12) saturate(.4) hue-rotate(350deg) brightness(1.03);
+  opacity: 0.07;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Frosted glass overlays */
+.glass-subtle {
+  background: rgba(255, 255, 255, .47);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: var(--radius-xl);
+  padding: 12px 20px;
+}
+.glass-bar {
+  background: rgba(255, 255, 255, .4);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: 14px;
+  padding: 10px 16px;
+}
+
+/* ── Carousel dots ── */
+.cdot {
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  /* Visual size stays small, but touch target = 48x48 via ::before */
+}
+.cdot::before {
+  content: '';
+  position: absolute;
+  inset: -20px -8px;
+  min-width: 48px;
+  min-height: 48px;
+}
+.cdot:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 99px;
+}
+
+/* ── Float cards ── */
+.float-card {
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ── Form components ── */
+.btn-brand {
+  width: 100%;
+  padding: 14px 0;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  color: #fff;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  background: var(--brand);
+  box-shadow: 0 4px 14px var(--brand-shadow);
+  transition: box-shadow .2s ease, transform .15s ease;
+}
+.btn-brand:hover { box-shadow: 0 6px 20px var(--brand-shadow) }
+.btn-brand:active { transform: scale(.98) }
+.btn-brand:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+.btn-brand:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-lg);
+  color: #111827;
+  font-size: 14px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.input-field::placeholder { color: #9ca3af }
+.input-field:focus {
+  border-color: #d97a3e;
+  box-shadow: 0 0 0 3px rgba(217, 122, 62, .15);
+}
+
+.check-brand {
+  accent-color: var(--brand);
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.check-brand:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ── Alert boxes ── */
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.alert--error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+.alert--success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+}
+
+/* Logo fallback text */
+.logo-fallback {
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1;
+}
+.logo-fallback--brand { color: var(--brand) }
+.logo-fallback--brand span { color: #444 }
+.logo-fallback--gray { color: #666 }

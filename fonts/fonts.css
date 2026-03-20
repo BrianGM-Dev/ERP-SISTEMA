@@ -1,0 +1,26 @@
+/* ============================================================
+   FONT STACK: Sora (Google Fonts) as primary
+   Strawford declarations kept but commented out.
+   If you add .woff2/.woff files later, uncomment them.
+   ============================================================ */
+
+/* Strawford not installed — using Sora as primary via Google Fonts CDN */
+
+/*
+@font-face {
+  font-family: 'Strawford';
+  src: url('Strawford-Regular.woff2') format('woff2'),
+       url('Strawford-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Strawford';
+  src: url('Strawford-Bold.woff2') format('woff2'),
+       url('Strawford-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+*/
