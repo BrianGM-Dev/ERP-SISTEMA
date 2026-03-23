@@ -244,6 +244,7 @@ const Compras = {
         oc.estado = 'Aprobada';
         oc.aprobado_por = App.state.user.nombre;
         oc.fecha_aprobacion = new Date().toISOString().split('T')[0];
+        AppData.logActividad('compra', 'OC ' + id + ' aprobada — ' + App.formatCurrency(oc.total), 'compras');
         App.showToast(`OC ${id} aprobada correctamente`, 'success');
         Compras.render();
       }
@@ -286,7 +287,30 @@ const Compras = {
             s.estado = s.stock === 0 ? 'Agotado' : s.stock < s.min_stock ? 'Stock Bajo' : 'OK';
           }
         });
-        App.showToast(`OC ${id} recepcionada y stock actualizado`, 'success');
+        // Auto-create CxP (cuenta por pagar) in Finanzas
+        const existingCxP = AppData.cuentas_pagar.find(c => c.oc_id === id);
+        if (!existingCxP) {
+          const totalOC = oc.items.reduce((s, item) => s + (item.cantidad * item.precio_unit), 0);
+          AppData.cuentas_pagar.unshift({
+            id: 'CXP-' + String(AppData.cuentas_pagar.length + 1).padStart(3, '0'),
+            proveedor_id: oc.proveedor_id,
+            oc_id: id,
+            monto: totalOC,
+            fecha_venc: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+            dias_credito: 30,
+            estado: 'Pendiente',
+          });
+          AppData.resumen_finanzas.total_pagar += totalOC;
+          // Update flujo_caja
+          const mesActual = AppData.flujo_caja[AppData.flujo_caja.length - 1];
+          if (mesActual) {
+            mesActual.egresos += totalOC;
+            mesActual.saldo = mesActual.ingresos - mesActual.egresos;
+          }
+        }
+
+        AppData.logActividad('compra', 'OC ' + id + ' recepcionada — Stock actualizado, CxP generada', 'compras');
+        App.showToast(`OC ${id} recepcionada — Stock actualizado y cuenta por pagar generada`, 'success');
         Compras.render();
       }
     );
@@ -298,7 +322,7 @@ const Compras = {
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Proveedor *</label>
-            <select id="noc-prov" class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-400">
+            <select id="noc-prov" class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-xl text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all">
               <option value="">Seleccionar proveedor...</option>
               ${AppData.proveedores.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('')}
             </select>
@@ -348,6 +372,7 @@ const Compras = {
         notas: document.getElementById('noc-notas').value,
       };
       AppData.ordenes_compra.unshift(nuevaOC);
+      AppData.logActividad('compra', 'Nueva OC ' + nuevaOC.id + ' creada — ' + App.formatCurrency(nuevaOC.total), 'compras');
       App.showToast(`OC ${nuevaOC.id} creada exitosamente`, 'success');
       Compras.render();
     }, 'Nueva Orden de Compra', true);
@@ -357,16 +382,16 @@ const Compras = {
     return `
       <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-end" id="noc-line-${idx}">
         <div class="sm:col-span-6">
-          <select class="noc-mat w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-400" onchange="Compras.calcTotal()">
+          <select class="noc-mat w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-xl text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all" onchange="Compras.calcTotal()">
             <option value="">Seleccionar material...</option>
             ${AppData.materiales.map(m => `<option value="${m.id}" data-precio="${m.precio_unit}">${m.nombre}</option>`).join('')}
           </select>
         </div>
         <div class="sm:col-span-2">
-          <input type="number" class="noc-qty w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-400" placeholder="Cant." min="1" oninput="Compras.calcTotal()"/>
+          <input type="number" class="noc-qty w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-xl text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all" placeholder="Cant." min="1" oninput="Compras.calcTotal()"/>
         </div>
         <div class="sm:col-span-2">
-          <input type="number" class="noc-precio w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-400" placeholder="Precio" step="0.01" oninput="Compras.calcTotal()"/>
+          <input type="number" class="noc-precio w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-xl text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all" placeholder="Precio" step="0.01" oninput="Compras.calcTotal()"/>
         </div>
         <div class="sm:col-span-1 text-center">
           <span class="noc-sub text-xs font-semibold text-gray-500">S/0</span>
@@ -412,7 +437,7 @@ const Compras = {
         ${UI.input('np-ciudad', 'text', 'Ciudad', '', 'Trujillo')}
         <div>
           <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Categoría</label>
-          <select id="np-categoria" class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-400">
+          <select id="np-categoria" class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-xl text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all">
             ${['Tableros','Madera','Herrajes','Consumibles','Acabados','Maquinaria'].map(c => `<option>${c}</option>`).join('')}
           </select>
         </div>
@@ -437,7 +462,7 @@ const Compras = {
       AppData.proveedores.push(nuevo);
       App.showToast(`Proveedor "${nombre}" creado`, 'success');
       Compras.render();
-    }, 'Nuevo Proveedor');
+    }, 'Nuevo Proveedor', true);
   },
 
   verOCsPorProveedor(provId) {

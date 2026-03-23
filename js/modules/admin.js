@@ -269,14 +269,14 @@ const Admin = {
             <div class="space-y-3">
               <div>
                 <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Moneda</label>
-                <select id="cfg-moneda" class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-400">
+                <select id="cfg-moneda" class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-xl text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all">
                   <option value="PEN" ${conf.moneda === 'PEN' ? 'selected' : ''}>PEN — Sol Peruano (S/)</option>
                   <option value="USD" ${conf.moneda === 'USD' ? 'selected' : ''}>USD — Dólar Americano ($)</option>
                 </select>
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">IGV (%)</label>
-                <input type="number" id="cfg-igv" value="${conf.igv}" min="0" max="100" class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-400"/>
+                <input type="number" id="cfg-igv" value="${conf.igv}" min="0" max="100" class="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-xl text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all"/>
               </div>
 
               <!-- System Status -->
@@ -387,21 +387,21 @@ const Admin = {
         <div class="space-y-4">
           <div>
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">Nombre completo *</label>
-            <input type="text" id="dw-nombre" value="" placeholder="Nombre del usuario" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition-shadow" />
+            <input type="text" id="dw-nombre" value="" placeholder="Nombre del usuario" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all focus:border-transparent transition-shadow" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">Email *</label>
-            <input type="email" id="dw-email" value="" placeholder="usuario@citemadera.pe" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition-shadow" />
+            <input type="email" id="dw-email" value="" placeholder="usuario@citemadera.pe" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all focus:border-transparent transition-shadow" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">Rol *</label>
-            <select id="dw-rol" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition-shadow">
+            <select id="dw-rol" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all focus:border-transparent transition-shadow">
               ${AppData.roles.map(function(r) { return '<option value="' + r.nombre + '">' + r.nombre + '</option>'; }).join('')}
             </select>
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">Area</label>
-            <select id="dw-area" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition-shadow">
+            <select id="dw-area" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all focus:border-transparent transition-shadow">
               ${['Gerencia','Administración','Ventas','Producción','Contabilidad','Logística'].map(function(a) { return '<option>' + a + '</option>'; }).join('')}
             </select>
           </div>
@@ -501,15 +501,15 @@ const Admin = {
         <div class="space-y-4">
           <div>
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">Nombre completo</label>
-            <input type="text" id="dw-nombre" value="${u.nombre}" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition-shadow" />
+            <input type="text" id="dw-nombre" value="${u.nombre}" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all focus:border-transparent transition-shadow" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">Email</label>
-            <input type="email" id="dw-email" value="${u.email}" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition-shadow" />
+            <input type="email" id="dw-email" value="${u.email}" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all focus:border-transparent transition-shadow" />
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">Rol</label>
-            <select id="dw-rol" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent transition-shadow">
+            <select id="dw-rol" class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all focus:border-transparent transition-shadow">
               ${AppData.roles.map(function(r) { return '<option value="' + r.nombre + '"' + (r.nombre === u.rol ? ' selected' : '') + '>' + r.nombre + '</option>'; }).join('')}
             </select>
           </div>

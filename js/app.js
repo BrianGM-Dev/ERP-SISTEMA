@@ -13,9 +13,12 @@ const App = {
     toastTimeout: null,
   },
 
+  // ── MULTI-PAGE DETECTION ──────────────────────────────────
+  isMultiPage: document.body.hasAttribute('data-module'),
+
   // ── ROLE-BASED ACCESS CONTROL ──────────────────────────────
   moduleAccess: {
-    'Administrador': ['dashboard','inventario','compras','ventas','produccion','costos','finanzas','rrhh','admin'],
+    'Administrador': ['dashboard','inventario','compras','ventas','produccion','costos','finanzas','rrhh','admin','designsystem'],
     'Gerente': ['dashboard','inventario','compras','ventas','produccion','costos','finanzas','rrhh'],
     'Vendedor': ['dashboard','ventas','inventario'],
     'Almacenero': ['dashboard','inventario','compras'],
@@ -38,6 +41,7 @@ const App = {
     finanzas: () => Finanzas.render(),
     rrhh: () => RRHH.render(),
     admin: () => Admin.render(),
+    designsystem: () => { if (typeof DesignSystem !== 'undefined') DesignSystem.render(); else document.getElementById('main-content').innerHTML = '<div class="p-8 text-center text-gray-400">Design System solo disponible en index2.html</div>'; },
   },
 
   moduleNames: {
@@ -50,6 +54,17 @@ const App = {
     finanzas: 'Finanzas',
     rrhh: 'RRHH',
     admin: 'Administración',
+    designsystem: 'Design System',
+  },
+
+  // ── STORAGE SAFETY WRAPPER ──────────────────────────────
+  _storage(type, key, value) {
+    try {
+      const s = type === 'local' ? localStorage : sessionStorage;
+      if (value === undefined) return s.getItem(key);
+      if (value === null) return s.removeItem(key);
+      return s.setItem(key, value);
+    } catch(e) { return null; }
   },
 
   // ── INIT ──────────────────────────────────────────────────
@@ -57,13 +72,19 @@ const App = {
     // Initialize theme system first (applies CSS variables)
     ThemeManager.init();
 
-    const savedDark = localStorage.getItem('erp_dark') === 'true';
+    const savedDark = this._storage('local', 'erp_dark') === 'true';
     if (savedDark) {
       this.state.darkMode = true;
       document.documentElement.classList.add('dark');
     }
 
-    const savedUser = sessionStorage.getItem('erp_user');
+    // Set current module from data-module attribute (multi-page mode)
+    const pageModule = document.body.getAttribute('data-module');
+    if (pageModule) {
+      this.state.currentModule = pageModule;
+    }
+
+    const savedUser = this._storage('session', 'erp_user');
     if (savedUser) {
       this.state.user = JSON.parse(savedUser);
       this.showApp();
@@ -88,7 +109,7 @@ const App = {
     }
 
     const user = this.state.user || {};
-    const avatarSrc = localStorage.getItem('erp_avatar');
+    const avatarSrc = this._storage('local', 'erp_avatar');
     const avatarHtml = avatarSrc
       ? `<img src="${avatarSrc}" class="w-16 h-16 rounded-full object-cover" alt="Avatar"/>`
       : `<div class="w-16 h-16 bg-brand-600 rounded-full flex items-center justify-center text-white text-xl font-bold">${(user.nombre || 'U').charAt(0)}</div>`;
@@ -150,7 +171,7 @@ const App = {
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target.result;
-      localStorage.setItem('erp_avatar', dataUrl);
+      this._storage('local', 'erp_avatar', dataUrl);
       this.updateAvatarDisplay();
       this.showToast('Foto de perfil actualizada', 'success');
       // Refresh profile menu if open
@@ -164,7 +185,7 @@ const App = {
   },
 
   updateAvatarDisplay() {
-    const avatarSrc = localStorage.getItem('erp_avatar');
+    const avatarSrc = this._storage('local', 'erp_avatar');
     const avatarEl = document.getElementById('user-avatar');
     if (avatarEl && avatarSrc) {
       avatarEl.innerHTML = `<img src="${avatarSrc}" class="w-full h-full rounded-full object-cover" alt=""/>`;
@@ -180,7 +201,7 @@ const App = {
   openProfileSettings() {
     this.toggleProfileMenu();
     const user = this.state.user || {};
-    const avatarSrc = localStorage.getItem('erp_avatar');
+    const avatarSrc = this._storage('local', 'erp_avatar');
     const avatarHtml = avatarSrc
       ? `<img src="${avatarSrc}" class="w-20 h-20 rounded-full object-cover" alt="Avatar"/>`
       : `<div class="w-20 h-20 bg-brand-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">${(user.nombre || 'U').charAt(0)}</div>`;
@@ -235,7 +256,7 @@ const App = {
   },
 
   removeAvatar() {
-    localStorage.removeItem('erp_avatar');
+    this._storage('local', 'erp_avatar', null);
     this.updateAvatarDisplay();
     this.showToast('Foto de perfil eliminada', 'success');
     this.closeModal();
@@ -266,7 +287,7 @@ const App = {
           avatar: 'A',
         };
         this.state.user = user;
-        sessionStorage.setItem('erp_user', JSON.stringify(user));
+        this._storage('session', 'erp_user', JSON.stringify(user));
         errorEl.classList.add('hidden');
         this.showApp();
         this.showToast('Bienvenido al sistema ERP CITE MADERA', 'success');
@@ -286,7 +307,7 @@ const App = {
     this.showModal(
       '<div class="text-center py-4"><h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Cerrar sesion?</h3><p class="text-gray-500 dark:text-gray-400">Se cerrara tu sesion actual.</p></div>',
       () => {
-        sessionStorage.removeItem('erp_user');
+        this._storage('session', 'erp_user', null);
         this.state.user = null;
         window.location.href = 'login.html';
       }
@@ -315,12 +336,30 @@ const App = {
       leido: false,
     }));
     this.updateNotifBadge();
-    this.navigate('dashboard');
+
+    // If on a module page, auto-navigate to that module; otherwise default to dashboard
+    const pageModule = document.body.getAttribute('data-module');
+    if (pageModule && this.modules[pageModule]) {
+      this.state.currentModule = pageModule;
+      this.navigate(pageModule);
+    } else {
+      this.navigate('dashboard');
+    }
   },
 
   // ── NAVIGATION ────────────────────────────────────────────
   navigate(module) {
+    if (this._navigating) return;
+    this._navigating = true;
+    setTimeout(() => this._navigating = false, 100);
+
     if (!this.modules[module]) return;
+
+    // Multi-page mode: redirect to module page
+    if (this.isMultiPage && module !== this.state.currentModule) {
+      window.location.href = module + '.html';
+      return;
+    }
 
     // Role-based permission check
     const allowed = this.getUserAllowedModules();
@@ -366,6 +405,9 @@ const App = {
     }
 
     const content = document.getElementById('main-content');
+    // Reset any custom styles set by previous module (e.g. Design System)
+    content.style.overflow = '';
+    content.style.padding = '';
     content.innerHTML = UI.skeleton();
 
     setTimeout(() => {
@@ -386,7 +428,7 @@ const App = {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    localStorage.setItem('erp_dark', this.state.darkMode);
+    this._storage('local', 'erp_dark', this.state.darkMode);
 
     const icon = document.getElementById('dark-icon');
     if (icon) {
@@ -494,7 +536,17 @@ const App = {
   },
 
   // ── MODAL ─────────────────────────────────────────────────
-  showModal(html, onConfirm = null, title = '', wide = false) {
+  showModal(html, onConfirm = null, title = '', wide = false, {msg, confirmText, confirmClass, onCancel} = {}) {
+    // Delegate to UI.modal() from ui-extended.js if available
+    if (typeof UI !== 'undefined' && UI.modal && msg !== undefined) {
+      const modalHtml = UI.modal(title, `<p class="text-sm text-gray-600 dark:text-gray-300">${msg}</p>`, {
+        footer: (onCancel ? UI.button('Cancelar', 'ghost', typeof onCancel === 'string' ? onCancel : `App.closeModal()`) + ' ' : '') +
+                UI.button(confirmText || 'Confirmar', confirmClass === 'danger' ? 'danger' : 'primary', typeof onConfirm === 'string' ? onConfirm : `App.closeModal()`)
+      });
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+      return;
+    }
+
     const existing = document.getElementById('global-modal');
     if (existing) existing.remove();
 
@@ -529,18 +581,36 @@ const App = {
   },
 
   _modalConfirm() {
-    if (this._onConfirm) this._onConfirm();
+    const cb = this._onConfirm;
+    this._onConfirm = null;
+    // Close modal immediately, then run callback
     this.closeModal();
+    if (cb) requestAnimationFrame(() => cb());
   },
 
   closeModal() {
-    const modal = document.getElementById('global-modal');
-    if (!modal) return;
-    const content = document.getElementById('modal-content');
-    if (content) {
-      content.classList.add('translate-y-4', 'scale-[.98]', 'opacity-0');
+    // Always try legacy global-modal first (used by Inventario, Compras, etc.)
+    const globalModal = document.getElementById('global-modal');
+    if (globalModal) {
+      const content = document.getElementById('modal-content');
+      const backdrop = document.getElementById('modal-backdrop');
+      if (content) {
+        content.style.transition = 'transform 120ms ease, opacity 120ms ease';
+        content.classList.add('translate-y-4', 'scale-[.98]', 'opacity-0');
+      }
+      if (backdrop) backdrop.style.transition = 'opacity 120ms ease';
+      if (backdrop) backdrop.style.opacity = '0';
+      setTimeout(() => globalModal.remove(), 130);
+      return;
     }
-    setTimeout(() => modal.remove(), 200);
+    // Fallback: try ui-extended modal
+    if (typeof UI !== 'undefined' && UI._closeModal) {
+      const extModal = document.querySelector('.fixed.inset-0.z-\\[999\\]');
+      if (extModal && extModal.id && extModal.id !== 'global-modal') {
+        UI._closeModal(extModal.id);
+        return;
+      }
+    }
   },
 
   // ── NOTIFICATIONS ─────────────────────────────────────────

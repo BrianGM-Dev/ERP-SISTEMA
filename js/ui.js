@@ -40,7 +40,9 @@ const UI = {
     const changeColor = isPositive
       ? 'text-green-600 bg-green-50 dark:bg-green-900/20 dark:text-green-400'
       : 'text-red-500 bg-red-50 dark:bg-red-900/20 dark:text-red-400';
-    const changeIcon = isPositive ? '↑' : '↓';
+    const changeIcon = isPositive
+      ? '<svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg>'
+      : '<svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>';
     const iconBg = {
       brand: 'bg-brand-50 text-brand-600 dark:bg-brand-900/30 dark:text-brand-300',
       indigo: 'bg-brand-50 text-brand-600 dark:bg-brand-900/30 dark:text-brand-300',
@@ -54,7 +56,7 @@ const UI = {
     };
 
     return `
-      <div class="bg-white dark:bg-night-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-night-700 hover:shadow-md transition-shadow duration-200">
+      <div class="bg-white dark:bg-night-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-night-700 hover:shadow-md transition-all duration-200">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-10 h-10 ${iconBg[color] || iconBg.brand} rounded-xl flex items-center justify-center flex-shrink-0">
             <span class="w-5 h-5 [&>svg]:w-full [&>svg]:h-full">${icon || ''}</span>
@@ -75,7 +77,7 @@ const UI = {
   // ── WIDGET CARD ──
   widgetCard(emoji, title, actionLabel = '', actionOnclick = '', content = '') {
     return `
-      <div class="bg-white dark:bg-night-800 rounded-2xl border border-gray-100 dark:border-night-700 overflow-hidden">
+      <div class="bg-white dark:bg-night-800 rounded-2xl border border-gray-100 dark:border-night-700 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
         <div class="px-5 py-4 flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             ${emoji ? `<span class="text-lg">${emoji}</span>` : ''}
@@ -97,7 +99,7 @@ const UI = {
           <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">${count}</p>
           <p class="text-xs text-gray-500 dark:text-gray-400">${label}</p>
         </div>
-        <svg class="w-5 h-5 text-gray-300 dark:text-night-500 group-hover:text-gray-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       </button>
     `;
   },
@@ -108,19 +110,19 @@ const UI = {
     const cellPad = compact ? 'px-5 py-2.5' : 'px-5 py-3.5';
 
     return `
-      <div class="rounded-xl border border-gray-100 dark:border-night-700 overflow-hidden">
+      <div class="rounded-2xl border border-gray-100 dark:border-night-700 overflow-hidden">
         <div class="overflow-x-auto">
           <table id="${id}" class="w-full text-sm">
             <thead>
               <tr class="bg-gray-50/50 dark:bg-night-700/30">
                 ${columns.map(col => `
-                  <th class="${cellPad} text-left text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider whitespace-nowrap">${col.label}</th>
+                  <th class="${cellPad} text-left text-[11px] font-medium text-gray-400 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">${col.label}</th>
                 `).join('')}
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-night-700/50">
               ${rows.length === 0
-                ? `<tr><td colspan="${columns.length}" class="py-16 text-center text-gray-400 dark:text-gray-500">${UI.emptyState(emptyMsg)}</td></tr>`
+                ? `<tr><td colspan="${columns.length}" class="py-16 text-center text-gray-400 dark:text-gray-400">${UI.emptyState(emptyMsg)}</td></tr>`
                 : rows.map((row, idx) => `
                   <tr class="hover:bg-gray-50/50 dark:hover:bg-night-700/30 transition-colors">
                     ${columns.map(col => `<td class="${cellPad} text-gray-700 dark:text-gray-300 ${col.class || ''}">${row[col.key] !== undefined ? row[col.key] : '-'}</td>`).join('')}
@@ -162,7 +164,7 @@ const UI = {
       ghost: 'text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-night-700 dark:hover:text-gray-200',
     };
     return `
-      <button onclick="${onclick}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-150 active:scale-[.98] ${types[type] || types.primary}">
+      <button onclick="${onclick}" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-xl transition-all duration-150 active:scale-[.98] disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-brand-400/40 focus-visible:ring-offset-1 ${types[type] || types.primary}">
         ${icon ? `<span class="w-4 h-4">${icon}</span>` : ''}${text}
       </button>
     `;
@@ -172,22 +174,24 @@ const UI = {
   iconBtn(icon, onclick, title = '', color = 'gray') {
     const colors = {
       gray: 'text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-night-700',
-      indigo: 'text-brand-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20',
+      brand: 'text-brand-500 hover:text-brand-700 hover:bg-brand-50 dark:text-brand-400 dark:hover:text-brand-300 dark:hover:bg-brand-900/20',
+      indigo: 'text-brand-500 hover:text-brand-700 hover:bg-brand-50 dark:text-brand-400 dark:hover:text-brand-300 dark:hover:bg-brand-900/20',
       red: 'text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20',
       green: 'text-accent-400 hover:text-accent-600 hover:bg-accent-50 dark:hover:bg-accent-700/20',
+      blue: 'text-blue-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20',
     };
-    return `<button onclick="${onclick}" title="${title}" class="p-2 rounded-xl transition-all duration-150 ${colors[color] || colors.gray}">${icon}</button>`;
+    return `<button onclick="${onclick}" title="${title}" class="p-2 rounded-xl transition-all duration-150 focus-visible:ring-2 focus-visible:ring-brand-400/40 focus-visible:ring-offset-1 [&>svg]:w-4 [&>svg]:h-4 ${colors[color] || colors.gray}">${icon}</button>`;
   },
 
   // ── EMPTY STATE ───────────────────────────────────────────
   emptyState(msg = 'No hay datos disponibles', icon = '', actionBtn = '') {
-    const defaultIcon = '<svg class="w-8 h-8 text-gray-300 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-2.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>';
+    const defaultIcon = '<svg class="w-8 h-8 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-2.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>';
     return `
       <div class="flex flex-col items-center justify-center py-16 px-4">
         <div class="w-14 h-14 bg-gray-50 dark:bg-night-700 rounded-2xl flex items-center justify-center mb-4">
           ${icon || defaultIcon}
         </div>
-        <p class="text-gray-400 dark:text-gray-500 text-sm text-center">${msg}</p>
+        <p class="text-gray-400 dark:text-gray-400 text-sm text-center">${msg}</p>
         ${actionBtn ? `<div class="mt-4">${actionBtn}</div>` : ''}
       </div>
     `;
@@ -247,11 +251,13 @@ const UI = {
   },
 
   // ── INPUT ─────────────────────────────────────────────────
-  input(id, type = 'text', label = '', value = '', placeholder = '', required = false) {
+  input(id, type = 'text', label = '', value = '', placeholder = '', required = false, error = '') {
+    const errorCls = error ? 'border-red-300 bg-red-50 focus:ring-red-400/40' : 'border-gray-200 dark:border-night-600 bg-gray-50 dark:bg-night-700 focus:ring-accent-300';
     return `
       <div>
         ${label ? `<label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">${label}${required ? '<span class="text-red-500 ml-0.5">*</span>' : ''}</label>` : ''}
-        <input type="${type}" id="${id}" value="${value}" placeholder="${placeholder}" ${required ? 'required' : ''} class="w-full px-3.5 py-2.5 text-sm bg-gray-50 dark:bg-night-700 border border-gray-200 dark:border-night-600 rounded-xl text-gray-700 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-300 transition-all"/>
+        <input type="${type}" id="${id}" value="${value}" placeholder="${placeholder}" ${required ? 'required' : ''} class="w-full px-3.5 py-2.5 text-sm ${errorCls} rounded-xl text-gray-700 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 transition-all"/>
+        ${error ? `<p class="mt-1 text-xs text-red-500">${error}</p>` : ''}
       </div>
     `;
   },
@@ -269,7 +275,7 @@ const UI = {
   // ── SECTION CARD (like Shoplytic clean cards) ─────────────
   card(title, content, actions = '', subtitle = '') {
     return `
-      <div class="bg-white dark:bg-night-800 rounded-2xl border border-gray-100 dark:border-night-700">
+      <div class="bg-white dark:bg-night-800 rounded-2xl border border-gray-100 dark:border-night-700 shadow-sm hover:shadow-md transition-all duration-200">
         <div class="px-6 py-5 border-b border-gray-100 dark:border-night-700 flex items-center justify-between">
           <div>
             <h3 class="font-semibold text-gray-900 dark:text-white">${title}</h3>
@@ -287,7 +293,7 @@ const UI = {
     return `
       <div class="bg-gray-100 dark:bg-night-800 rounded-xl p-1 inline-flex gap-1">
         ${tabs.map(tab => `
-          <button onclick="${onClickPrefix}('${tab.id}')" id="tab-${tab.id}" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 whitespace-nowrap min-w-[120px] ${tab.id === activeTab ? 'bg-white dark:bg-night-700 text-brand-600 dark:text-brand-400 shadow-sm border border-brand-200 dark:border-night-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 border border-transparent'}">
+          <button onclick="${onClickPrefix}('${tab.id}')" id="tab-${tab.id}" class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150 whitespace-nowrap min-w-[120px] focus-visible:ring-2 focus-visible:ring-brand-400/40 focus-visible:ring-offset-1 ${tab.id === activeTab ? 'bg-white dark:bg-night-700 text-brand-600 dark:text-brand-400 shadow-sm border border-brand-200 dark:border-night-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 border border-transparent'}">
             ${tab.label}
           </button>
         `).join('')}
@@ -383,7 +389,7 @@ const UI = {
     return `
       <div class="bg-white dark:bg-night-700 rounded-xl p-4 border-l-4 ${stateColors[op.estado] || 'border-l-gray-300'} cursor-pointer hover:shadow-lg hover:shadow-gray-100/50 dark:hover:shadow-night-900/50 transition-all duration-200">
         <div class="flex items-start justify-between gap-2 mb-2">
-          <span class="text-xs font-bold text-gray-400 dark:text-gray-500">${op.id}</span>
+          <span class="text-xs font-bold text-gray-400 dark:text-gray-400">${op.id}</span>
           <span class="text-xs px-2 py-0.5 rounded-lg font-medium ${prioColors[op.prioridad] || prioColors.Normal}">${op.prioridad}</span>
         </div>
         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">${producto.nombre || 'Producto'}</p>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es" class="">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#2A1F17"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23A84117'/><text x='16' y='23' font-size='18' fill='white' text-anchor='middle' font-family='Arial' font-weight='bold'>C</text></svg>"/>
+  <title>ERPEmprendedor — CITE MADERA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sora','Inter','ui-sans-serif','system-ui'],
+            mono: ['IBM Plex Mono','ui-monospace','monospace'],
+          },
+          colors: {
+            brand: {
+              50:'rgb(var(--brand-50)/<alpha-value>)',100:'rgb(var(--brand-100)/<alpha-value>)',
+              200:'rgb(var(--brand-200)/<alpha-value>)',300:'rgb(var(--brand-300)/<alpha-value>)',
+              400:'rgb(var(--brand-400)/<alpha-value>)',500:'rgb(var(--brand-500)/<alpha-value>)',
+              600:'rgb(var(--brand-600)/<alpha-value>)',700:'rgb(var(--brand-700)/<alpha-value>)',
+              800:'rgb(var(--brand-800)/<alpha-value>)',900:'rgb(var(--brand-900)/<alpha-value>)',
+            },
+            accent: {
+              50:'rgb(var(--accent-50)/<alpha-value>)',100:'rgb(var(--accent-100)/<alpha-value>)',
+              200:'rgb(var(--accent-200)/<alpha-value>)',300:'rgb(var(--accent-300)/<alpha-value>)',
+              400:'rgb(var(--accent-400)/<alpha-value>)',500:'rgb(var(--accent-500)/<alpha-value>)',
+              600:'rgb(var(--accent-600)/<alpha-value>)',700:'rgb(var(--accent-700)/<alpha-value>)',
+            },
+            gold:{300:'#ffe580',400:'#ffdc39',500:'#f0c800'},
+            night: {
+              50:'rgb(var(--night-50)/<alpha-value>)',100:'rgb(var(--night-100)/<alpha-value>)',
+              200:'rgb(var(--night-200)/<alpha-value>)',300:'rgb(var(--night-300)/<alpha-value>)',
+              400:'rgb(var(--night-400)/<alpha-value>)',500:'rgb(var(--night-500)/<alpha-value>)',
+              600:'rgb(var(--night-600)/<alpha-value>)',700:'rgb(var(--night-700)/<alpha-value>)',
+              800:'rgb(var(--night-800)/<alpha-value>)',900:'rgb(var(--night-900)/<alpha-value>)',
+              950:'rgb(var(--night-950)/<alpha-value>)',
+            },
+          },
+          animation: {
+            'fade-in':'fadeIn .3s ease-out',
+            'slide-up':'slideUp .4s cubic-bezier(.16,1,.3,1)',
+            'shake':'shake .4s ease-in-out',
+            'slide-in':'slideIn .3s cubic-bezier(.16,1,.3,1)',
+          },
+          keyframes: {
+            fadeIn:{'0%':{opacity:'0'},'100%':{opacity:'1'}},
+            slideUp:{'0%':{opacity:'0',transform:'translateY(20px)'},'100%':{opacity:'1',transform:'translateY(0)'}},
+            shake:{'0%,100%':{transform:'translateX(0)'},'20%,60%':{transform:'translateX(-8px)'},'40%,80%':{transform:'translateX(8px)'}},
+            slideIn:{'0%':{transform:'translateX(-100%)'},'100%':{transform:'translateX(0)'}},
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root{
+      --brand-50:253 243 238;--brand-100:250 227 212;--brand-200:244 196 168;
+      --brand-300:236 160 115;--brand-400:217 122 62;--brand-500:192 96 30;
+      --brand-600:168 65 23;--brand-700:138 53 18;--brand-800:110 43 16;--brand-900:82 32 12;
+      --accent-50:240 247 242;--accent-100:220 238 225;--accent-200:185 218 193;
+      --accent-300:140 190 152;--accent-400:107 143 113;--accent-500:80 120 88;
+      --accent-600:60 98 70;--accent-700:45 78 55;
+      --night-50:248 245 242;--night-100:238 230 222;--night-200:218 206 192;
+      --night-300:185 168 150;--night-400:148 130 112;--night-500:112 96 78;
+      --night-600:82 68 54;--night-700:58 46 36;--night-800:42 32 24;
+      --night-900:30 22 16;--night-950:20 14 10;
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+      --sb:#1E1610;--sb-hover:rgba(255,255,255,.06);--sb-active:rgba(168,65,23,.15);
+      --sb-text:#8C7B6A;--sb-text-hover:#D4C4B0;--sb-border:rgba(196,168,130,.08);
+      --surface:#F6F3EF;--glass:rgba(246,243,239,.82);
+      --border:#E8DFD4;--border-brand:rgba(168,65,23,.15);
+    }
+    ::selection{background:rgba(168,65,23,.18)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{font-family:'Sora','Inter',sans-serif;letter-spacing:-.01em;overscroll-behavior:none;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;margin:0}
+    h1,h2,h3,h4,h5,h6,.font-bold,.font-semibold{letter-spacing:-.03em}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:#D4C4B0;border-radius:99px}
+    ::-webkit-scrollbar-thumb:hover{background:rgb(var(--brand-400))}
+
+    /* ===================== SIDEBAR ===================== */
+    #sidebar{
+      background:var(--sb);
+      width:240px;transition:width .28s cubic-bezier(.16,1,.3,1);
+      border-right:1px solid var(--sb-border);
+    }
+    .sidebar-collapsed #sidebar{width:68px}
+
+    /* Nav items */
+    .si{
+      display:flex;align-items:center;gap:12px;
+      padding:10px 14px;border-radius:12px;
+      color:var(--sb-text);font-size:13px;font-weight:500;
+      transition:all .15s ease;cursor:pointer;border:none;width:100%;
+      background:none;text-align:left;position:relative;
+      white-space:nowrap;overflow:hidden;
+    }
+    .si:hover{color:var(--sb-text-hover);background:var(--sb-hover)}
+    .si.active{color:#F4C4A8;background:var(--sb-active)}
+    .si.active::after{
+      content:'';position:absolute;right:0;top:10px;bottom:10px;
+      width:3px;border-radius:3px 0 0 3px;background:rgb(var(--brand-400));
+    }
+    .si svg{width:20px;height:20px;flex-shrink:0}
+    .si .si-label{overflow:hidden;transition:opacity .2s ease,width .25s cubic-bezier(.16,1,.3,1)}
+    .sidebar-collapsed .si .si-label{opacity:0;width:0}
+    .sidebar-collapsed .si{justify-content:center;padding:10px 0}
+
+    /* Section labels */
+    .sl{
+      font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;
+      text-transform:uppercase;letter-spacing:.14em;color:rgba(140,123,106,.35);
+      padding:20px 16px 6px;overflow:hidden;
+      transition:opacity .2s,max-height .25s,padding .25s;
+    }
+    .sidebar-collapsed .sl{opacity:0;max-height:0;padding:0 16px}
+
+    /* Sidebar brand */
+    .sb-full{transition:opacity .2s,width .28s cubic-bezier(.16,1,.3,1),margin .28s;overflow:hidden}
+    .sidebar-collapsed .sb-full{opacity:0;width:0;margin-left:0}
+
+    /* Sidebar footer */
+    .sf{overflow:hidden;transition:opacity .25s,max-height .3s}
+    .sidebar-collapsed .sf{opacity:0;max-height:0}
+
+    /* ===================== TOPBAR ===================== */
+    .topbar{
+      height:60px;
+      background:var(--glass);
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border-bottom:1px solid var(--border);
+    }
+    .dark .topbar{background:rgba(30,22,16,.88);border-color:rgba(255,255,255,.06)}
+
+    /* ===================== MAIN ===================== */
+    #main-content>div{animation:fadeIn .3s ease-out}
+    input:focus,select:focus,textarea:focus{outline:none}
+    canvas{max-width:100%}
+    .loading-dots::after{content:'.';animation:dots 1.5s steps(3,end) infinite}
+    @keyframes dots{0%,20%{content:'.'}40%{content:'..'}60%,100%{content:'...'}}
+
+    /* Mobile */
+    .pb-safe{padding-bottom:calc(70px + var(--safe-bottom))}
+    #sidebar-backdrop{transition:opacity .3s ease}
+    #sidebar-backdrop.active{opacity:1;pointer-events:auto}
+    .bnav-item.active{color:rgb(var(--brand-500))!important}
+    .bnav-item.active svg{stroke-width:2.2}
+    @media(max-width:1023px){
+      #sidebar{position:fixed;z-index:40;transform:translateX(-100%);width:260px!important}
+      #sidebar.open{transform:translateX(0)}
+      .sidebar-collapsed #sidebar{width:260px!important}
+      .sidebar-collapsed .si .si-label{opacity:1;width:auto}
+      .sidebar-collapsed .si{justify-content:flex-start;padding:10px 14px}
+      .sidebar-collapsed .sl{opacity:1;max-height:40px;padding:20px 16px 6px}
+      .sidebar-collapsed .sb-full{opacity:1;width:auto;margin-left:12px}
+      .sidebar-collapsed .sf{opacity:1;max-height:200px}
+    }
+
+    /* Tooltip */
+    .sidebar-collapsed .si:hover .si-tip{display:block}
+    .si-tip{
+      display:none;position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%);
+      background:var(--sb);color:#F4F1ED;font-size:12px;font-weight:500;
+      padding:6px 12px;border-radius:10px;white-space:nowrap;z-index:9999;
+      box-shadow:0 8px 20px rgba(30,22,16,.25);border:1px solid rgba(196,168,130,.12);
+      pointer-events:none;
+    }
+    .si-tip::before{
+      content:'';position:absolute;right:100%;top:50%;transform:translateY(-50%);
+      border:5px solid transparent;border-right-color:var(--sb);
+    }
+    @media(max-width:1023px){.si-tip{display:none!important}}
+
+    /* UX: Focus visible */
+    button:focus-visible,a:focus-visible{outline:2px solid rgb(var(--brand-400));outline-offset:2px;border-radius:8px}
+
+    /* ===================== UTILITIES ===================== */
+    .mono-label{
+      font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
+      text-transform:uppercase;letter-spacing:.12em;
+    }
+  </style>
+</head>
+
+<body class="bg-[#F6F3EF] dark:bg-night-950 text-night-900 dark:text-night-100 antialiased">
+
+<div id="app-shell" class="hidden h-screen overflow-hidden sidebar-collapsed">
+
+  <!-- Backdrop (mobile) -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 opacity-0 pointer-events-none lg:hidden" onclick="App.closeSidebar()"></div>
+
+  <!-- Main flex layout -->
+  <div class="flex h-full">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside id="sidebar" class="h-full flex flex-col flex-shrink-0 z-40 lg:z-20 overflow-hidden">
+
+      <!-- Brand header -->
+      <div class="flex items-center min-h-[60px] px-5 gap-3">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#C0601E,#8a3512);box-shadow:0 4px 12px rgba(168,65,23,.35)">
+          <svg class="w-[18px] h-[18px] text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        </div>
+        <div class="sb-full" style="margin-left:0">
+          <p class="text-[13px] font-bold text-[#F4F1ED] leading-none tracking-tight">CITE <span style="color:rgb(var(--brand-300))">madera</span></p>
+          <p class="mono-label mt-1" style="font-size:8px;color:rgba(140,123,106,.4)">ERP v1.0</p>
+        </div>
+      </div>
+
+      <!-- Separator -->
+      <div class="mx-4 mb-1" style="border-top:1px solid var(--sb-border)"></div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 overflow-y-auto py-1 px-2.5 space-y-0.5">
+
+        <button data-module="dashboard" onclick="App.navigate('dashboard')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+          <span class="si-label">Dashboard</span>
+          <span class="si-tip">Dashboard</span>
+        </button>
+
+        <p class="sl">Operaciones</p>
+
+        <button data-module="inventario" onclick="App.navigate('inventario')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <span class="si-label">Inventario</span>
+          <span class="si-tip">Inventario</span>
+        </button>
+        <button data-module="compras" onclick="App.navigate('compras')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span class="si-label">Compras</span>
+          <span class="si-tip">Compras</span>
+        </button>
+        <button data-module="ventas" onclick="App.navigate('ventas')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span class="si-label">Ventas</span>
+          <span class="si-tip">Ventas</span>
+        </button>
+        <button data-module="produccion" onclick="App.navigate('produccion')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="si-label">Produccion</span>
+          <span class="si-tip">Produccion</span>
+        </button>
+
+        <p class="sl">Analisis</p>
+
+        <button data-module="costos" onclick="App.navigate('costos')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          <span class="si-label">Costos</span>
+          <span class="si-tip">Costos</span>
+        </button>
+        <button data-module="finanzas" onclick="App.navigate('finanzas')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="si-label">Finanzas</span>
+          <span class="si-tip">Finanzas</span>
+        </button>
+
+        <p class="sl">Gestion</p>
+
+        <button data-module="rrhh" onclick="App.navigate('rrhh')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="si-label">RRHH</span>
+          <span class="si-tip">RRHH</span>
+        </button>
+        <button data-module="admin" onclick="App.navigate('admin')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span class="si-label">Administracion</span>
+          <span class="si-tip">Admin</span>
+        </button>
+
+        <div class="mx-3 my-2" style="border-top:1px solid var(--sb-border)"></div>
+
+        <button data-module="designsystem" onclick="App.navigate('designsystem')" class="si">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+          <span class="si-label">Design System</span>
+          <span class="si-tip">UI Kit</span>
+        </button>
+      </nav>
+
+      <!-- Footer: novedades + contacto -->
+      <div class="sf px-3 pb-2 space-y-2">
+        <!-- Novedades -->
+        <div class="rounded-xl p-3" style="background:rgba(168,65,23,.08);border:1px solid rgba(168,65,23,.1)">
+          <p class="mono-label mb-1" style="font-size:8px;color:rgb(var(--brand-300))">Novedades</p>
+          <p class="text-[11px] text-[#D4C4B0] leading-relaxed">Nuevo modulo de Costos con analisis de variaciones</p>
+          <p class="text-[9px] text-[#6B5C4D] mt-1">Marzo 2025</p>
+        </div>
+        <!-- Contacto -->
+        <div class="rounded-xl p-3" style="background:rgba(255,255,255,.03);border:1px solid var(--sb-border)">
+          <p class="mono-label mb-1.5" style="font-size:8px;color:rgba(140,123,106,.4)">Soporte CITE</p>
+          <p class="text-[11px] text-[#8C7B6A]">citemadera@itp.gob.pe</p>
+          <p class="text-[10px] text-[#5C4D3E] mt-0.5">(044) 604-430</p>
+        </div>
+      </div>
+
+      <!-- User -->
+      <div class="px-3 pb-3 pt-2" style="border-top:1px solid var(--sb-border)">
+        <button onclick="App.toggleProfileMenu()" class="flex items-center gap-3 w-full p-1.5 rounded-xl hover:bg-[rgba(255,255,255,.06)] transition-all group">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-xs flex-shrink-0 overflow-hidden" style="background:linear-gradient(135deg,#C0601E,#A84117)" id="sidebar-user-avatar">A</div>
+          <div class="sb-full text-left" style="margin-left:0">
+            <p class="text-[12px] font-semibold text-[#F4F1ED] leading-none truncate">Administrador</p>
+            <p class="text-[10px] text-[#6B5C4D] leading-none mt-1 truncate font-mono">admin@citemadera.pe</p>
+          </div>
+          <svg class="w-3.5 h-3.5 text-[#6B5C4D] sb-full ml-auto group-hover:text-[#8C7B6A] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ============ MAIN AREA ============ -->
+    <div id="main-area" class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+      <!-- TOPBAR -->
+      <header class="topbar flex items-center gap-3 px-4 lg:px-6 z-10 flex-shrink-0">
+        <!-- Expand/Collapse sidebar -->
+        <button onclick="App.toggleSidebar()"
+          class="p-2 rounded-xl text-night-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-night-700 transition-all active:scale-95"
+          aria-label="Menu lateral">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+
+        <!-- Breadcrumb -->
+        <div id="breadcrumb" class="flex items-center gap-2">
+          <span class="mono-label text-night-400 dark:text-night-500 hidden sm:inline" style="font-size:9px">ERP</span>
+          <svg class="w-3 h-3 text-night-300 dark:text-night-600 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          <span class="text-night-900 dark:text-night-100 font-bold text-[17px] tracking-tight">Dashboard</span>
+        </div>
+
+        <div class="flex-1"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-1">
+          <button onclick="App.openThemePicker()" title="Personalizar tema"
+            class="p-2 rounded-xl text-night-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-night-700 transition-all active:scale-95">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+          </button>
+          <button onclick="App.toggleDark()"
+            class="p-2 rounded-xl text-night-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-night-700 transition-all active:scale-95">
+            <svg id="dark-icon" class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+          <button onclick="App.showNotifications()"
+            class="relative p-2 rounded-xl text-night-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-night-700 transition-all active:scale-95">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span id="notif-badge" class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[8px] rounded-full flex items-center justify-center font-bold hidden">0</span>
+          </button>
+
+          <!-- User pill (desktop) -->
+          <div id="profile-wrapper" class="relative hidden sm:block ml-2 pl-3" style="border-left:1px solid var(--border)">
+            <button onclick="App.toggleProfileMenu()" class="flex items-center gap-2.5 py-1.5 px-2 rounded-xl hover:bg-brand-50 dark:hover:bg-night-700 transition-all group">
+              <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white font-bold text-xs overflow-hidden" style="background:linear-gradient(135deg,#C0601E,#A84117)" id="user-avatar">A</div>
+              <div class="hidden lg:block text-left">
+                <p class="text-[12px] font-semibold text-night-800 dark:text-night-100 leading-none" id="user-name">Administrador</p>
+                <p class="text-[10px] text-night-400 leading-none mt-0.5 font-mono">Admin</p>
+              </div>
+              <svg class="w-3 h-3 text-night-300 hidden lg:block group-hover:text-night-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <main id="main-content" class="flex-1 overflow-y-auto bg-[#F6F3EF] dark:bg-night-900 p-4 sm:p-5 lg:p-7 pb-safe lg:pb-7">
+      </main>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV (mobile) -->
+  <nav id="bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 z-20 px-3 pb-2" style="padding-bottom:calc(8px + var(--safe-bottom))">
+    <div class="rounded-2xl shadow-lg" style="background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border)">
+      <div class="flex items-center justify-around h-14">
+        <button onclick="App.navigate('dashboard')" data-bnav="dashboard" class="bnav-item flex flex-col items-center gap-0.5 w-14 py-1.5 text-night-400 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span class="text-[9px] font-semibold">Inicio</span>
+        </button>
+        <button onclick="App.navigate('ventas')" data-bnav="ventas" class="bnav-item flex flex-col items-center gap-0.5 w-14 py-1.5 text-night-400 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span class="text-[9px] font-semibold">Ventas</span>
+        </button>
+        <button onclick="App.navigate('inventario')" data-bnav="inventario" class="bnav-item flex flex-col items-center gap-0.5 w-14 py-1.5 text-night-400 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <span class="text-[9px] font-semibold">Stock</span>
+        </button>
+        <button onclick="App.navigate('finanzas')" data-bnav="finanzas" class="bnav-item flex flex-col items-center gap-0.5 w-14 py-1.5 text-night-400 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="text-[9px] font-semibold">Finanzas</span>
+        </button>
+        <button onclick="App.toggleSidebar()" class="bnav-item flex flex-col items-center gap-0.5 w-14 py-1.5 text-night-400 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <span class="text-[9px] font-semibold">Mas</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<!-- Scripts -->
+<script src="js/data.js"></script>
+<script src="js/themes.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/ui2-overrides.js"></script>
+<script src="js/modules/dashboard.js"></script>
+<script src="js/modules/inventario.js"></script>
+<script src="js/modules/compras.js"></script>
+<script src="js/modules/ventas.js"></script>
+<script src="js/modules/produccion.js"></script>
+<script src="js/modules/costos.js"></script>
+<script src="js/modules/finanzas.js"></script>
+<script src="js/modules/rrhh.js"></script>
+<script src="js/modules/admin.js"></script>
+<script src="js/modules/designsystem.js"></script>
+<script src="js/app.js"></script>
+
+<!-- Override App.toggleSidebar for index2 layout -->
+<script>
+(function(){
+  const shell = document.getElementById('app-shell');
+
+  App.toggleSidebar = function() {
+    const isMobile = window.innerWidth < 1024;
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+
+    if (isMobile) {
+      const isOpen = sidebar.classList.contains('open');
+      if (isOpen) {
+        App.closeSidebar();
+      } else {
+        sidebar.classList.add('open');
+        backdrop.classList.add('active');
+      }
+    } else {
+      shell.classList.toggle('sidebar-collapsed');
+      App.state.sidebarCollapsed = shell.classList.contains('sidebar-collapsed');
+    }
+  };
+
+  App.closeSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('active');
+  };
+
+  // Register designsystem module
+  App.modules.designsystem = () => DesignSystem.render();
+  App.moduleNames = App.moduleNames || {};
+  App.moduleNames.designsystem = 'Design System';
+  // Allow access for all roles
+  Object.keys(App.moduleAccess).forEach(rol => {
+    if (!App.moduleAccess[rol].includes('designsystem')) App.moduleAccess[rol].push('designsystem');
+  });
+
+  // Override navigate to update .si active states + breadcrumb
+  const origNavigate = App.navigate.bind(App);
+  App.navigate = function(mod) {
+    origNavigate(mod);
+    // Update sidebar active
+    document.querySelectorAll('.si').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.module === mod);
+    });
+    // Update breadcrumb
+    const bc = document.getElementById('breadcrumb');
+    if (bc) {
+      const name = {dashboard:'Dashboard',inventario:'Inventario',compras:'Compras',ventas:'Ventas',produccion:'Produccion',costos:'Costos',finanzas:'Finanzas',rrhh:'RRHH',admin:'Administracion'}[mod] || mod;
+      const span = bc.querySelector('.text-night-900, .dark\\:text-night-100');
+      if (span) span.textContent = name;
+    }
+    // Update bottom nav
+    document.querySelectorAll('.bnav-item').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bnav === mod);
+    });
+    // Close mobile sidebar
+    if (window.innerWidth < 1024) App.closeSidebar();
+  };
+})();
+</script>
+</body>
+</html>

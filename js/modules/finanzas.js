@@ -413,6 +413,13 @@ const Finanzas = {
         if (fac) fac.estado = 'Cobrada';
         AppData.resumen_finanzas.saldo_disponible += cxc.monto;
         AppData.resumen_finanzas.total_cobrar -= cxc.monto;
+        // Update flujo_caja - add real income for current month
+        const mesActual = AppData.flujo_caja[AppData.flujo_caja.length - 1];
+        if (mesActual) {
+          mesActual.ingresos += cxc.monto;
+          mesActual.saldo = mesActual.ingresos - mesActual.egresos;
+        }
+        AppData.logActividad('cobro', 'Cobro registrado: ' + App.formatCurrency(cxc.monto) + ' — ' + (cli.nombre || ''), 'finanzas');
         App.showToast(`Cobro registrado: ${App.formatCurrency(cxc.monto)} de ${cli.nombre || 'cliente'}`, 'success');
         Finanzas.render();
       }
@@ -429,6 +436,13 @@ const Finanzas = {
         cxp.estado = 'Pagada';
         AppData.resumen_finanzas.saldo_disponible -= cxp.monto;
         AppData.resumen_finanzas.total_pagar -= cxp.monto;
+        // Update flujo_caja - register payment for current month
+        const mesActual = AppData.flujo_caja[AppData.flujo_caja.length - 1];
+        if (mesActual) {
+          mesActual.egresos += cxp.monto;
+          mesActual.saldo = mesActual.ingresos - mesActual.egresos;
+        }
+        AppData.logActividad('pago', 'Pago registrado: ' + App.formatCurrency(cxp.monto) + ' — ' + (prov.nombre || ''), 'finanzas');
         App.showToast(`Pago registrado: ${App.formatCurrency(cxp.monto)} a ${prov.nombre || 'proveedor'}`, 'success');
         Finanzas.render();
       }

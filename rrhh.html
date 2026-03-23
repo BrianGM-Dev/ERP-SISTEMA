@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="mobile-web-app-capable" content="yes"/>
-  <title>ERPEmprendedor — CITE MADERA</title>
-  <meta name="description" content="ERPEmprendedor es un sistema ERP 100% gratuito desarrollado por CITE MADERA Trujillo para MYPE del sector madera y muebles."/>
-  <meta property="og:title" content="ERPEmprendedor — CITE MADERA"/>
-  <meta property="og:description" content="Sistema ERP gratuito para emprendedores del sector madera y muebles. Desarrollado por CITE MADERA Trujillo."/>
-  <meta property="og:type" content="website"/>
+  <title>RRHH — CITE MADERA ERP</title>
+  <meta name="description" content="Empleados, asistencia y planilla. ERPEmprendedor CITE MADERA."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -67,9 +64,7 @@
   </script>
   <link rel="stylesheet" href="css/app.css"/>
 </head>
-<body class="bg-[#FAFAF8] dark:bg-night-900 text-gray-800 dark:text-gray-100 antialiased">
-
-  <!-- Login is now in login.html -->
+<body class="bg-[#FAFAF8] dark:bg-night-900 text-gray-800 dark:text-gray-100 antialiased" data-module="rrhh">
 
   <!-- ===== APP SHELL ===== -->
   <div id="app-shell" class="hidden flex h-screen overflow-hidden">
@@ -288,7 +283,7 @@
     </nav>
   </div>
 
-  <!-- ===== SCRIPTS ===== -->
+  <!-- Scripts: shared + module-specific -->
   <script src="js/data.js"></script>
   <script src="js/themes.js"></script>
   <script src="js/ui.js"></script>
@@ -302,33 +297,24 @@
   <script src="js/modules/finanzas.js"></script>
   <script src="js/modules/rrhh.js"></script>
   <script src="js/modules/admin.js"></script>
-  <script src="js/modules/designsystem.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- Sidebar tooltip (fixed position, rendered above everything) -->
   <div id="sidebar-tooltip"></div>
   <script>
   (function(){
-    const tip = document.getElementById('sidebar-tooltip');
+    var tip = document.getElementById('sidebar-tooltip');
     if (!tip) return;
     document.getElementById('sidebar').addEventListener('mouseover', function(e){
-      const item = e.target.closest('.sidebar-item[data-tooltip]');
+      var item = e.target.closest('.sidebar-item[data-tooltip]');
       if (!item || !this.classList.contains('sidebar-collapsed')) { tip.classList.remove('visible'); return; }
-      const text = item.getAttribute('data-tooltip');
-      if (!text) return;
-      const rect = item.getBoundingClientRect();
-      tip.textContent = text;
+      var rect = item.getBoundingClientRect();
+      tip.textContent = item.getAttribute('data-tooltip');
       tip.style.left = (rect.right + 10) + 'px';
       tip.style.top = (rect.top + rect.height/2) + 'px';
       tip.style.transform = 'translateY(-50%)';
       tip.classList.add('visible');
     });
-    document.getElementById('sidebar').addEventListener('mouseleave', function(){
-      tip.classList.remove('visible');
-    });
-    document.getElementById('sidebar').addEventListener('mouseout', function(e){
-      if (!e.target.closest('.sidebar-item[data-tooltip]')) tip.classList.remove('visible');
-    });
+    document.getElementById('sidebar').addEventListener('mouseleave', function(){ tip.classList.remove('visible'); });
   })();
   </script>
 </body>

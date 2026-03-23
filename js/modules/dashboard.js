@@ -6,7 +6,7 @@
 const Dashboard = {
   render() {
     const content = document.getElementById('main-content');
-    const kpis = AppData.kpis;
+    const kpis = AppData.getKPIs();
     const pctVentas = (((kpis.ventas_mes - kpis.ventas_mes_anterior) / kpis.ventas_mes_anterior) * 100).toFixed(1);
     const userName = App.state.user ? App.state.user.nombre : 'Usuario';
 
@@ -332,7 +332,7 @@ const Dashboard = {
   },
 
   exportCSV() {
-    const kpis = AppData.kpis;
+    const kpis = AppData.getKPIs();
     const kpiData = [
       { label: 'Ventas del Mes', value: kpis.ventas_mes },
       { label: 'Cotizaciones Activas', value: kpis.cotizaciones_activas },

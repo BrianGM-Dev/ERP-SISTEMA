@@ -1,0 +1,206 @@
+/* APP SHELL STYLES — CITE MADERA ERP */
+
+/*
+ * TAILWIND CDN CONFIG REFERENCE
+ * The following Tailwind configuration is applied inline in index.html
+ * via <script>tailwind.config = {...}</script> and must remain there
+ * (Tailwind CDN requires inline config). Summary:
+ *
+ * darkMode: 'class'
+ * fontFamily.sans/display: ['Sora', 'Inter', 'ui-sans-serif', 'system-ui']
+ * letterSpacing.snug: '-0.03em'
+ * colors.brand:  50–900  using rgb(var(--brand-*) / <alpha-value>)
+ * colors.accent: 50–700  using rgb(var(--accent-*) / <alpha-value>)
+ * colors.gold:   300:#ffe580, 400:#ffdc39, 500:#f0c800
+ * colors.night:  50–950  using rgb(var(--night-*) / <alpha-value>)
+ * animations: fade-in, slide-up, shake, slide-in (with keyframes)
+ */
+
+
+/* ==========================================================================
+   1. CSS Custom Properties
+   ========================================================================== */
+
+:root {
+  --brand-50:253 243 238; --brand-100:250 227 212; --brand-200:244 196 168;
+  --brand-300:236 160 115; --brand-400:217 122 62; --brand-500:192 96 30;
+  --brand-600:168 65 23; --brand-700:138 53 18; --brand-800:110 43 16; --brand-900:82 32 12;
+  --accent-50:235 249 245; --accent-100:210 242 232; --accent-200:170 228 210;
+  --accent-300:110 200 175; --accent-400:70 175 150; --accent-500:45 139 117;
+  --accent-600:35 112 95; --accent-700:28 88 75;
+  --night-50:248 245 242; --night-100:238 232 226; --night-200:220 210 198;
+  --night-300:190 175 160; --night-400:155 138 120; --night-500:120 102 82;
+  --night-600:95 78 60; --night-700:72 58 42; --night-800:50 38 26;
+  --night-900:35 26 18; --night-950:22 16 10;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --shell-border: #f0ece7;
+  --shell-surface: #FAFAF8;
+}
+
+
+/* ==========================================================================
+   2. Base / Reset
+   ========================================================================== */
+
+::selection { background: rgba(168,65,23,.15); }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Strawford','Sora','Inter',sans-serif; letter-spacing: -0.01em; overscroll-behavior: none; }
+h1,h2,h3,h4,h5,h6,.font-bold,.font-semibold { letter-spacing: -0.03em; }
+
+
+/* ==========================================================================
+   3. Custom Scrollbar
+   ========================================================================== */
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgb(var(--brand-200)); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--brand-300)); }
+.dark ::-webkit-scrollbar-thumb { background: rgb(var(--night-500)); }
+.dark ::-webkit-scrollbar-thumb:hover { background: rgb(var(--night-400)); }
+
+
+/* ==========================================================================
+   4. Sidebar
+   ========================================================================== */
+
+#sidebar { transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); }
+.sidebar-item { transition: all 0.15s ease; position: relative; }
+.nav-label { transition: opacity 0.2s ease; }
+
+/* Sidebar active item: soft brand background with left border indicator */
+.sidebar-item.active {
+  background: rgb(var(--brand-50));
+  color: rgb(var(--brand-600)) !important;
+  border-left: 3px solid rgb(var(--brand-600));
+  box-shadow: none;
+  font-weight: 600;
+}
+.sidebar-item.active svg {
+  color: rgb(var(--brand-600));
+}
+.dark .sidebar-item.active {
+  background: rgb(var(--brand-600) / 0.15);
+  color: rgb(var(--brand-300)) !important;
+  border-left-color: rgb(var(--brand-400));
+}
+.dark .sidebar-item.active svg {
+  color: rgb(var(--brand-300));
+}
+
+.sidebar-item:not(.active):hover { transform: translateX(2px); }
+
+/* Section divider labels in sidebar */
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  padding: 16px 16px 6px 16px;
+}
+.dark .sidebar-section-label { color: rgb(var(--night-400)); }
+
+/* Sidebar overlay on mobile */
+#sidebar-backdrop { transition: opacity 0.3s ease; }
+#sidebar-backdrop.active { opacity: 1; pointer-events: auto; }
+
+/* Sidebar collapsed tooltip (rendered via JS as a fixed div) */
+#sidebar-tooltip {
+  position: fixed;
+  padding: 6px 12px;
+  background: #1f1f1f;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+#sidebar-tooltip.visible { opacity: 1; }
+#sidebar-tooltip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: #1f1f1f;
+}
+
+
+/* ==========================================================================
+   5. Login
+   ========================================================================== */
+
+.login-bg {
+  background: linear-gradient(160deg, rgb(var(--night-900)) 0%, rgb(var(--brand-600)) 50%, rgb(var(--accent-300)) 100%);
+}
+.glass {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+
+/* ==========================================================================
+   6. Main Content & Forms
+   ========================================================================== */
+
+#main-content > div { animation: fadeIn 0.25s ease-out; }
+input:focus, select:focus, textarea:focus { outline: none; }
+canvas { max-width: 100%; }
+
+/* Loading indicator */
+.loading-dots::after { content: '.'; animation: dots 1.5s steps(3,end) infinite; }
+@keyframes dots { 0%,20%{content:'.'} 40%{content:'..'} 60%,100%{content:'...'} }
+
+
+/* ==========================================================================
+   7. Shell Layout Utilities
+   ========================================================================== */
+
+/* Shell border utility classes */
+.shell-border-r { border-right: 1px solid var(--shell-border); }
+.shell-border-b { border-bottom: 1px solid var(--shell-border); }
+.shell-border-t { border-top: 1px solid var(--shell-border); }
+.shell-border-l { border-left: 1px solid var(--shell-border); }
+
+/* Topbar height */
+.topbar-h { height: 58px; }
+
+/* Mobile: bottom nav safe area */
+.pb-safe { padding-bottom: calc(70px + var(--safe-bottom)); }
+
+/* Bottom nav active */
+.bnav-item.active { color: rgb(var(--brand-600)) !important; }
+.bnav-item.active svg { stroke-width: 2.4; }
+
+
+/* ==========================================================================
+   8. Dark Mode Overrides
+   ========================================================================== */
+
+/* Dark mode: override warm borders to dark tones */
+.dark #sidebar,
+.dark #sidebar-brand,
+.dark #bottom-nav,
+.dark #profile-wrapper { border-color: rgb(var(--night-700)) !important; }
+.dark .sidebar-section-label { color: rgb(var(--night-400)); }
+.dark header[style] { border-color: rgb(var(--night-700)) !important; }
+.dark #sidebar .p-3[style] { border-color: rgb(var(--night-700)) !important; }
+
+
+/* ==========================================================================
+   9. Responsive
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  #sidebar { position: fixed; z-index: 40; transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+}
